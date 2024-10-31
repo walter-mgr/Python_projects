@@ -1,30 +1,19 @@
-# coordinates = [{"row": (1, 2, 3)}, {"column": (1, 2, 3)}]
+from termcolor import cprint
 
-
-"""
-def print_grid():
-    for i in range(3):
-        print("---+---+---")
-        print(f" {' '} |" * 2 + f" {' '}")
-"""
-
-
-A = (0, 0)
-B = (0, 1)
-C = (0, 2)
-D = (1, 0)
-E = (1, 1)
-F = (1, 2)
-G = (2, 0)
-H = (2, 1)
-I = (2, 2)
+A = (1, 1)
+B = (1, 2)
+C = (1, 3)
+D = (2, 1)
+E = (2, 2)
+F = (2, 3)
+G = (3, 1)
+H = (3, 2)
+I = (3, 3)
 
 grid = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
 
+
 cells = [A, B, C, D, E, F, G, H, I]
-# print(cells)
-# cells.remove(C)
-# print(cells)
 
 
 def print_grid(grid):
@@ -33,21 +22,20 @@ def print_grid(grid):
         print("-" * 9)
 
 
-# take coordinates from PLAYER_1
 lable = ["row", "column"]
 
 
 def player_move(lable):
-    choices = (0, 1, 2)
+    choices = (1, 2, 3)
     while True:
         try:
-            move = int(input(f"Select {lable} (0-2): "))
+            move = int(input(f"Select {lable} (1-3): "))
             if move in choices:
                 return move
             else:
                 raise ValueError()
         except ValueError:
-            print("Wrong input")
+            cprint("Wrong input", "red")
 
 
 def define_cell():
@@ -58,16 +46,15 @@ def define_cell():
 
 
 # TODO: define condition for game exit
-# TODO: after X, move X again is not allowed
 
 
 def x_player_move():
     while len(cells):
-        print(f"X's player turn")
+        cprint(f"X's player turn", "blue")
         try:
             x_move = define_cell()
             if x_move in cells:
-                grid[x_move[0]][x_move[1]] = "X"
+                grid[x_move[0] - 1][x_move[1] - 1] = "X"
                 cells.remove(x_move)
                 print_grid(grid)
                 print(cells)
@@ -76,16 +63,16 @@ def x_player_move():
             else:
                 raise ValueError()
         except ValueError:
-            print("This spot is busy!")
+            cprint("This spot is busy!", "yellow")
 
 
 def o_player_move():
     while len(cells):
-        print(f"0's player turn")
+        cprint(f"0's player turn", "blue")
         try:
             o_move = define_cell()
             if o_move in cells:
-                grid[o_move[0]][o_move[1]] = "0"
+                grid[o_move[0] - 1][o_move[1] - 1] = "0"
                 cells.remove(o_move)
                 print_grid(grid)
                 print(cells)
@@ -94,7 +81,7 @@ def o_player_move():
             else:
                 raise ValueError()
         except ValueError:
-            print("This spot is busy!")
+            cprint("This spot is busy!", "yellow")
 
 
 def main():
