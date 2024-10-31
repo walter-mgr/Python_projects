@@ -1,4 +1,4 @@
-coordinates = [{"row": (1, 2, 3)}, {"column": (1, 2, 3)}]
+# coordinates = [{"row": (1, 2, 3)}, {"column": (1, 2, 3)}]
 
 
 """
@@ -9,7 +9,6 @@ def print_grid():
 """
 
 
-grid = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
 A = (0, 0)
 B = (0, 1)
 C = (0, 2)
@@ -19,6 +18,13 @@ F = (1, 2)
 G = (2, 0)
 H = (2, 1)
 I = (2, 2)
+
+grid = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
+
+cells = [A, B, C, D, E, F, G, H, I]
+# print(cells)
+# cells.remove(C)
+# print(cells)
 
 
 def print_grid(grid):
@@ -51,42 +57,49 @@ def define_cell():
     return cell
 
 
-first_player = define_cell()
-second_player = define_cell()
-print(first_player)
-print(second_player)
+# TODO: define condition for game exit
+# TODO: after X, move X again is not allowed
 
 
-"""
-busy = []
-first_player_move = player_move()
-if first_player_move == A:
-    grid[0][0] = "X"
-    busy.append(A)
-    print_grid(grid)
-    print(busy)
+def x_player_move():
+    while len(cells):
+        print(f"X's player turn")
+        try:
+            x_move = define_cell()
+            if x_move in cells:
+                grid[x_move[0]][x_move[1]] = "X"
+                cells.remove(x_move)
+                print_grid(grid)
+                print(cells)
+                print(len(cells))
+                o_player_move()
+            else:
+                raise ValueError()
+        except ValueError:
+            print("This spot is busy!")
 
 
-second_player_move = player_move()
-if second_player_move == B:
-    grid[0][1] = "0"
-    busy.append(B)
-    print_grid(grid)
-    print(busy)
-elif second_player_move in busy:
-    print("This spot is occupied")
-    second_player_move = player_move()
-    if second_player_move == B:
-        grid[0][1] = "0"
-        busy.append(B)
-    print_grid(grid)
-    print(busy)
-"""
-
-# if second_player_move == (1, 1):
-# grid[1][1] = "0"
-# print_grid(grid)
+def o_player_move():
+    while len(cells):
+        print(f"0's player turn")
+        try:
+            o_move = define_cell()
+            if o_move in cells:
+                grid[o_move[0]][o_move[1]] = "0"
+                cells.remove(o_move)
+                print_grid(grid)
+                print(cells)
+                print(len(cells))
+                x_player_move()
+            else:
+                raise ValueError()
+        except ValueError:
+            print("This spot is busy!")
 
 
-# grid[1][2] = "0"
-# grid[0][2] = "X"
+def main():
+    x_player_move()
+    o_player_move()
+
+
+main()
