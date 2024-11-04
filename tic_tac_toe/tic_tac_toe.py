@@ -62,7 +62,6 @@ def define_winner(value):
         print("Tie!")
 
 
-"""
 def x_player_move():
     while len(cells):
         cprint(f"X's player turn", "blue")
@@ -79,10 +78,8 @@ def x_player_move():
                 raise ValueError()
         except ValueError:
             cprint("This spot is busy!", "yellow")
-"""
 
 
-"""
 def o_player_move():
     while len(cells):
         cprint(f"0's player turn", "blue")
@@ -99,12 +96,11 @@ def o_player_move():
                 raise ValueError()
         except ValueError:
             cprint("This spot is busy!", "yellow")
-"""
 
 
-# def main():
-# x_player_move()
-# o_player_move()
+def main():
+    x_player_move()
+    o_player_move()
 
 
-# main()
+main()
