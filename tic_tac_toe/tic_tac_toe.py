@@ -46,8 +46,23 @@ def define_cell():
 
 
 # TODO: define condition for game exit
+def define_winner(value):
+    if (
+        (grid[0][0] == value and grid[1][1] == value and grid[2][2] == value)
+        or (grid[0][2] == value and grid[1][1] == value and grid[2][0] == value)
+        or (grid[0][0] == value and grid[0][1] == value and grid[0][2] == value)
+        or (grid[1][0] == value and grid[1][1] == value and grid[1][2] == value)
+        or (grid[2][0] == value and grid[2][1] == value and grid[2][2] == value)
+        or (grid[0][0] == value and grid[1][0] == value and grid[2][0] == value)
+        or (grid[0][1] == value and grid[1][1] == value and grid[2][1] == value)
+        or (grid[0][2] == value and grid[1][2] == value and grid[2][2] == value)
+    ):
+        print("Win!")
+    else:
+        print("Tie!")
 
 
+"""
 def x_player_move():
     while len(cells):
         cprint(f"X's player turn", "blue")
@@ -58,14 +73,16 @@ def x_player_move():
                 cells.remove(x_move)
                 print_grid(grid)
                 print(cells)
-                print(len(cells))
-                o_player_move()
+                print(grid)
+                # o_player_move()
             else:
                 raise ValueError()
         except ValueError:
             cprint("This spot is busy!", "yellow")
+"""
 
 
+"""
 def o_player_move():
     while len(cells):
         cprint(f"0's player turn", "blue")
@@ -82,11 +99,12 @@ def o_player_move():
                 raise ValueError()
         except ValueError:
             cprint("This spot is busy!", "yellow")
+"""
 
 
-def main():
-    x_player_move()
-    o_player_move()
+# def main():
+# x_player_move()
+# o_player_move()
 
 
-main()
+# main()
