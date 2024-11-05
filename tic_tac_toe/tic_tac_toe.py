@@ -17,6 +17,7 @@ cells = [A, B, C, D, E, F, G, H, I]
 
 
 def print_grid(grid):
+    print("-" * 9)
     for row in grid:
         print(" | ".join(row))
         print("-" * 9)
@@ -25,7 +26,7 @@ def print_grid(grid):
 lable = ["row", "column"]
 
 
-def player_move(lable):
+def get_user_input(lable):
     choices = (1, 2, 3)
     while True:
         try:
@@ -39,8 +40,8 @@ def player_move(lable):
 
 
 def define_cell():
-    select_row = player_move(lable[0])
-    select_column = player_move(lable[1])
+    select_row = get_user_input(lable[0])
+    select_column = get_user_input(lable[1])
     cell = (select_row, select_column)
     return cell
 
@@ -99,9 +100,11 @@ def o_player_move():
             cprint("This spot is busy!", "yellow")
 
 
-def main():
-    x_player_move()
-    o_player_move()
-
-
-main()
+# def main():
+# x_player_move()
+# o_player_move()
+#
+#
+# main()
+x_player_move()
+o_player_move()
