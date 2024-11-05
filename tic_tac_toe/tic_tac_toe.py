@@ -46,7 +46,11 @@ def define_cell():
 
 
 # TODO: define condition for game exit
+player = ("X", "0")
+
+
 def define_winner(value):
+    winner = ""
     if (
         (grid[0][0] == value and grid[1][1] == value and grid[2][2] == value)
         or (grid[0][2] == value and grid[1][1] == value and grid[2][0] == value)
@@ -57,9 +61,8 @@ def define_winner(value):
         or (grid[0][1] == value and grid[1][1] == value and grid[2][1] == value)
         or (grid[0][2] == value and grid[1][2] == value and grid[2][2] == value)
     ):
-        print("Win!")
-    else:
-        print("Tie!")
+        winner = f"Player {value} is the Winer!"
+    return winner
 
 
 def x_player_move():
@@ -68,12 +71,11 @@ def x_player_move():
         try:
             x_move = define_cell()
             if x_move in cells:
-                grid[x_move[0] - 1][x_move[1] - 1] = "X"
+                grid[x_move[0] - 1][x_move[1] - 1] = player[0]
                 cells.remove(x_move)
                 print_grid(grid)
-                print(cells)
-                print(grid)
-                # o_player_move()
+                # break
+                o_player_move()
             else:
                 raise ValueError()
         except ValueError:
@@ -86,11 +88,10 @@ def o_player_move():
         try:
             o_move = define_cell()
             if o_move in cells:
-                grid[o_move[0] - 1][o_move[1] - 1] = "0"
+                grid[o_move[0] - 1][o_move[1] - 1] = player[1]
                 cells.remove(o_move)
                 print_grid(grid)
-                print(cells)
-                print(len(cells))
+
                 x_player_move()
             else:
                 raise ValueError()
