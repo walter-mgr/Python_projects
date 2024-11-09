@@ -62,7 +62,9 @@ def define_winner(value):
         or (grid[0][1] == value and grid[1][1] == value and grid[2][1] == value)
         or (grid[0][2] == value and grid[1][2] == value and grid[2][2] == value)
     ):
-        winner = f"Player {value} is the Winer!"
+        # winner = f"Player {value} is the Winner!"
+        winner = value
+        print(f"Player {winner} is the Winner!")
     return winner
 
 
@@ -75,12 +77,20 @@ def x_player_move():
                 grid[x_move[0] - 1][x_move[1] - 1] = player[0]
                 cells.remove(x_move)
                 print_grid(grid)
-                # break
+
+                winner = define_winner(player[0])  # TODO:
+                if winner == player[0]:
+                    break
                 o_player_move()
+                # return grid
             else:
                 raise ValueError()
         except ValueError:
             cprint("This spot is busy!", "yellow")
+
+
+"""
+"""
 
 
 def o_player_move():
@@ -92,6 +102,7 @@ def o_player_move():
                 grid[o_move[0] - 1][o_move[1] - 1] = player[1]
                 cells.remove(o_move)
                 print_grid(grid)
+                define_winner(player[1])
 
                 x_player_move()
             else:
@@ -100,11 +111,12 @@ def o_player_move():
             cprint("This spot is busy!", "yellow")
 
 
-# def main():
-# x_player_move()
-# o_player_move()
-#
-#
-# main()
-x_player_move()
-o_player_move()
+def main():
+    x_player_move()
+    o_player_move()
+
+
+main()
+# x_player = player_move(player[0])
+# o_player = player_move(player[1])
+# define_winner()
