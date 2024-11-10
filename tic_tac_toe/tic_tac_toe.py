@@ -1,5 +1,6 @@
 from termcolor import cprint
 
+# Cells coordinates
 A = (1, 1)
 B = (1, 2)
 C = (1, 3)
@@ -10,10 +11,13 @@ G = (3, 1)
 H = (3, 2)
 I = (3, 3)
 
+# Table structure
 grid = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
 
 
 cells = [A, B, C, D, E, F, G, H, I]
+row_or_column = ("row", "column")
+players = ("X", "0")
 
 
 def print_grid(grid):
@@ -23,31 +27,24 @@ def print_grid(grid):
         print("-" * 9)
 
 
-lable = ["row", "column"]
-
-
-def get_user_input(lable):
+def get_user_input(row_or_column: int) -> int:
     choices = (1, 2, 3)
     while True:
         try:
-            move = int(input(f"Select {lable} (1-3): "))
+            move = int(input(f"Select {row_or_column} (1-3): "))
             if move in choices:
                 return move
             else:
                 raise ValueError()
         except ValueError:
-            cprint("Wrong input", "red")
+            cprint("Invalid input", "red")
 
 
 def define_cell():
-    select_row = get_user_input(lable[0])
-    select_column = get_user_input(lable[1])
+    select_row = get_user_input(row_or_column[0])
+    select_column = get_user_input(row_or_column[1])
     cell = (select_row, select_column)
     return cell
-
-
-# TODO: define condition for game exit
-player = ("X", "0")
 
 
 def define_winner(value):
@@ -62,61 +59,41 @@ def define_winner(value):
         or (grid[0][1] == value and grid[1][1] == value and grid[2][1] == value)
         or (grid[0][2] == value and grid[1][2] == value and grid[2][2] == value)
     ):
-        # winner = f"Player {value} is the Winner!"
         winner = value
-        print(f"Player {winner} is the Winner!")
+        cprint(f"Player {winner} is the Winner!", "green")
+
     return winner
 
 
-def x_player_move():
+def player_move(players):
     while len(cells):
-        cprint(f"X's player turn", "blue")
+        cprint(f"{players}'s player turn", "blue")
         try:
-            x_move = define_cell()
-            if x_move in cells:
-                grid[x_move[0] - 1][x_move[1] - 1] = player[0]
-                cells.remove(x_move)
+            move = define_cell()
+            if move in cells:
+                grid[move[0] - 1][move[1] - 1] = players
+                cells.remove(move)
                 print_grid(grid)
-
-                winner = define_winner(player[0])  # TODO:
-                if winner == player[0]:
-                    break
-                o_player_move()
-                # return grid
+                return players
             else:
                 raise ValueError()
         except ValueError:
-            cprint("This spot is busy!", "yellow")
-
-
-"""
-"""
-
-
-def o_player_move():
-    while len(cells):
-        cprint(f"0's player turn", "blue")
-        try:
-            o_move = define_cell()
-            if o_move in cells:
-                grid[o_move[0] - 1][o_move[1] - 1] = player[1]
-                cells.remove(o_move)
-                print_grid(grid)
-                define_winner(player[1])
-
-                x_player_move()
-            else:
-                raise ValueError()
-        except ValueError:
-            cprint("This spot is busy!", "yellow")
+            cprint("This spot is alredy taken!", "yellow")
 
 
 def main():
-    x_player_move()
-    o_player_move()
+    while len(cells):
+
+        player_1 = player_move(players[0])
+        winner = define_winner(player_1)
+        if winner == player_1:
+            break
+
+        else:
+            player_2 = player_move(players[1])
+            winner = define_winner(player_2)
+            if winner == player_2:
+                break
 
 
 main()
-# x_player = player_move(player[0])
-# o_player = player_move(player[1])
-# define_winner()
