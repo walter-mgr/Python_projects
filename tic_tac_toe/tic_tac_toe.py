@@ -78,22 +78,24 @@ def player_move(players):
             else:
                 raise ValueError()
         except ValueError:
-            cprint("This spot is alredy taken!", "yellow")
+            cprint("This spot is already taken!", "yellow")
 
 
 def main():
-    while len(cells):
+    winner = None
+    while not winner:
 
-        player_1 = player_move(players[0])
-        winner = define_winner(player_1)
-        if winner == player_1:
-            break
+        for player in players:
+            player_move(player)
+            winner = define_winner(player)
 
-        else:
-            player_2 = player_move(players[1])
-            winner = define_winner(player_2)
-            if winner == player_2:
+            if winner:
                 break
 
+        if not winner and len(cells) <= 0:
+            cprint("No winner was declared. It's a tie!", "light_magenta")
+            break
 
-main()
+
+if __name__ == "__main__":
+    main()
