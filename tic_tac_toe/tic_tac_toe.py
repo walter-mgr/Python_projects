@@ -47,24 +47,6 @@ def define_cell():
     return cell
 
 
-def define_winner(value):
-    winner = ""
-    if (
-        (grid[0][0] == value and grid[1][1] == value and grid[2][2] == value)
-        or (grid[0][2] == value and grid[1][1] == value and grid[2][0] == value)
-        or (grid[0][0] == value and grid[0][1] == value and grid[0][2] == value)
-        or (grid[1][0] == value and grid[1][1] == value and grid[1][2] == value)
-        or (grid[2][0] == value and grid[2][1] == value and grid[2][2] == value)
-        or (grid[0][0] == value and grid[1][0] == value and grid[2][0] == value)
-        or (grid[0][1] == value and grid[1][1] == value and grid[2][1] == value)
-        or (grid[0][2] == value and grid[1][2] == value and grid[2][2] == value)
-    ):
-        winner = value
-        cprint(f"Player {winner} is the Winner!", "green")
-
-    return winner
-
-
 def player_move(players):
     while len(cells):
         cprint(f"{players}'s player turn", "blue")
@@ -81,15 +63,29 @@ def player_move(players):
             cprint("This spot is already taken!", "yellow")
 
 
+def determine_winner(player):
+    for index, row in enumerate(grid):
+        column = [row[index] for row in grid]
+        if (
+            (grid[0][0] == player and grid[1][1] == player and grid[2][2] == player)
+            or (grid[0][2] == player and grid[1][1] == player and grid[2][0] == player)
+            or (row[0] == player and row[1] == player and row[2] == player)
+            or (column[0] == player and column[1] == player and column[2] == player)
+        ):
+            winner = player
+            return winner
+
+
 def main():
     winner = None
     while not winner:
 
         for player in players:
-            player_move(player)
-            winner = define_winner(player)
+            player = player_move(player)
+            winner = determine_winner(player)
 
             if winner:
+                cprint(f"Player {winner} is winner", "green")
                 break
 
         if not winner and len(cells) <= 0:
