@@ -21,10 +21,11 @@ players = ("X", "0")
 
 
 def print_grid(grid):
-    print("-" * 9)
+    line = "-" * 9
+    print(line)
     for row in grid:
         print(" | ".join(row))
-        print("-" * 9)
+        print(line)
 
 
 def get_user_input(row_or_column: int) -> int:
@@ -67,10 +68,10 @@ def determine_winner(player):
     for index, row in enumerate(grid):
         column = [row[index] for row in grid]
         if (
-            (grid[0][0] == player and grid[1][1] == player and grid[2][2] == player)
-            or (grid[0][2] == player and grid[1][1] == player and grid[2][0] == player)
-            or (row[0] == player and row[1] == player and row[2] == player)
-            or (column[0] == player and column[1] == player and column[2] == player)
+            (grid[0][0] == grid[1][1] == grid[2][2] == player)
+            or (grid[0][2] == grid[1][1] == grid[2][0] == player)
+            or (row[0] == row[1] == row[2] == player)
+            or (column[0] == column[1] == column[2] == player)
         ):
             winner = player
             return winner
@@ -88,7 +89,7 @@ def main():
                 cprint(f"Player {winner} is winner", "green")
                 break
 
-        if not winner and len(cells) <= 0:
+        if not winner and not len(cells):
             cprint("No winner was declared. It's a tie!", "light_magenta")
             break
 
