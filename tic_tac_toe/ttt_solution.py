@@ -1,5 +1,7 @@
-from termcolor import cprint
+from termcolor import cprint, colored
 
+X = colored("X", "green")
+O = colored("0", "yellow")
 
 board = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
 row_column = ("row", "column")
@@ -61,7 +63,7 @@ def is_full(board):
 
 
 def main():
-    current_player = "X"
+    current_player = X
     while True:
 
         cprint(f"{current_player}'s player turn", "blue")
@@ -75,14 +77,14 @@ def main():
             continue
 
         if check_winner(board, current_player):
-            cprint(f"Player {current_player} is a winner!", "green")
+            print(f"Player {current_player} is a winner!")
             break
 
         if is_full(board):
             cprint("The board is full. No winner was detected", "light_magenta")
             break
 
-        current_player = "0" if current_player == "X" else "X"
+        current_player = O if current_player == X else X
 
 
 if __name__ == "__main__":
