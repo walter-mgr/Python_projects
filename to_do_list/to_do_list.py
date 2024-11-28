@@ -53,23 +53,17 @@ def print_no_tasks():
     )
 
 
-# TODO: add option to remove all tasks
 def remove_task(todo, choice):
     if not todo[TASKS]:
         print_no_tasks()
-
-    elif choice == 0:
-        todo[TASKS] = []
-
     else:
-        cprint("To delete all press 0", "magenta")
         choice = get_user_choice(todo[PROMPTS][1], todo[TASKS])
         todo[TASKS].pop(choice - 1)
 
 
 def view_tasks(todo):
     if todo[TASKS]:
-        print(colored("TASKS", "cyan", attrs=["reverse", "blink"]))
+        print(colored("TASKS", "cyan", attrs=["reverse"]))
         for index, task in enumerate(todo[TASKS], 1):
             print(f"{index}. {task}")
         print()
