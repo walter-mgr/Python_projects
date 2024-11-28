@@ -21,10 +21,11 @@ players = ("X", "0")
 
 
 def print_grid(grid):
-    print("-" * 9)
+    line = "-" * 9
+    print(line)
     for row in grid:
         print(" | ".join(row))
-        print("-" * 9)
+        print(line)
 
 
 def get_user_input(row_or_column: int) -> int:
@@ -47,24 +48,6 @@ def define_cell():
     return cell
 
 
-def define_winner(value):
-    winner = ""
-    if (
-        (grid[0][0] == value and grid[1][1] == value and grid[2][2] == value)
-        or (grid[0][2] == value and grid[1][1] == value and grid[2][0] == value)
-        or (grid[0][0] == value and grid[0][1] == value and grid[0][2] == value)
-        or (grid[1][0] == value and grid[1][1] == value and grid[1][2] == value)
-        or (grid[2][0] == value and grid[2][1] == value and grid[2][2] == value)
-        or (grid[0][0] == value and grid[1][0] == value and grid[2][0] == value)
-        or (grid[0][1] == value and grid[1][1] == value and grid[2][1] == value)
-        or (grid[0][2] == value and grid[1][2] == value and grid[2][2] == value)
-    ):
-        winner = value
-        cprint(f"Player {winner} is the Winner!", "green")
-
-    return winner
-
-
 def player_move(players):
     while len(cells):
         cprint(f"{players}'s player turn", "blue")
@@ -78,7 +61,20 @@ def player_move(players):
             else:
                 raise ValueError()
         except ValueError:
-            cprint("This spot is alredy taken!", "yellow")
+            cprint("This spot is already taken!", "yellow")
+
+
+def determine_winner(player):
+    for index, row in enumerate(grid):
+        column = [row[index] for row in grid]
+        if (
+            (grid[0][0] == grid[1][1] == grid[2][2] == player)
+            or (grid[0][2] == grid[1][1] == grid[2][0] == player)
+            or (row[0] == row[1] == row[2] == player)
+            or (column[0] == column[1] == column[2] == player)
+        ):
+            winner = player
+            return winner
 
 
 def main():
@@ -86,13 +82,14 @@ def main():
     while not winner:
 
         for player in players:
-            player_move(player)
-            winner = define_winner(player)
+            player = player_move(player)
+            winner = determine_winner(player)
 
             if winner:
+                cprint(f"Player {winner} is winner", "green")
                 break
 
-        if not winner and len(cells) <= 0:
+        if not winner and not len(cells):
             cprint("No winner was declared. It's a tie!", "light_magenta")
             break
 
