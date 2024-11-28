@@ -1,5 +1,6 @@
 from termcolor import cprint, colored
 
+
 HEADERS = "headers"
 MENU = "menu"
 TASKS = "tasks"
@@ -18,7 +19,7 @@ todo = {
 
 
 def print_header(header, color="cyan"):
-    cprint(header, color, attrs=["reverse"])  #####
+    cprint(header, color, attrs=["reverse"])
 
 
 def display_menu(todo):
@@ -87,6 +88,7 @@ def main():
             todo[TASKS].append(task)
 
         elif choice == 3:
+            view_tasks(todo)
             remove_task(todo, choice)
 
         else:
