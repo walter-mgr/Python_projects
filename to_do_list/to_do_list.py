@@ -16,7 +16,7 @@ todo = {
 }
 
 
-def display_menu():
+def display_menu(todo):
     print(colored("MENU", "cyan", attrs=["reverse"]))
     for index, menu in enumerate(todo[MENU], 1):
         print(f"{index}. {menu}")
@@ -26,6 +26,7 @@ def get_user_choice(prompt, array) -> int:
     while True:
         try:
             choice = int(input(colored(prompt, "green")))
+            print()
             if choice <= 0 or choice > len(array):
                 raise ValueError()
             return choice
@@ -46,22 +47,27 @@ def get_task(prompt) -> str:
 
 def print_no_tasks():
     cprint(
-        """
-No tasks in the list
+        """No tasks in the list
                """,
         "yellow",
     )
 
 
+# TODO: add option to remove all tasks
 def remove_task(todo, choice):
     if not todo[TASKS]:
         print_no_tasks()
+
+    elif choice == 0:
+        todo[TASKS] = []
+
     else:
+        cprint("To delete all press 0", "magenta")
         choice = get_user_choice(todo[PROMPTS][1], todo[TASKS])
         todo[TASKS].pop(choice - 1)
 
 
-def view_tasks():
+def view_tasks(todo):
     if todo[TASKS]:
         print(colored("TASKS", "cyan", attrs=["reverse", "blink"]))
         for index, task in enumerate(todo[TASKS], 1):
@@ -74,11 +80,11 @@ def view_tasks():
 
 def main():
     while True:
-        display_menu()
+        display_menu(todo)
 
         choice = get_user_choice(todo[PROMPTS][0], todo[MENU])
         if choice == 1:
-            view_tasks()
+            view_tasks(todo)
 
         elif choice == 2:
             task = get_task(todo[PROMPTS][2])
@@ -93,5 +99,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # print(bool(todo[TASKS]))
-    # print(bool(not todo[TASKS]))
