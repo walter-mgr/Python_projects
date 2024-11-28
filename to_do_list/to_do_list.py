@@ -1,11 +1,12 @@
 from termcolor import cprint, colored
 
-
+HEADERS = "headers"
 MENU = "menu"
 TASKS = "tasks"
 PROMPTS = "prompts"
 
 todo = {
+    HEADERS: ["MENU", "TASKS"],
     MENU: ["View Tasks", "Add a Task", "Remove a Task", "Exit"],
     TASKS: [],
     PROMPTS: [
@@ -16,8 +17,12 @@ todo = {
 }
 
 
+def print_header(header, color="cyan"):
+    cprint(header, color, attrs=["reverse"])  #####
+
+
 def display_menu(todo):
-    print(colored("MENU", "cyan", attrs=["reverse"]))
+    print_header(todo[HEADERS][0])
     for index, menu in enumerate(todo[MENU], 1):
         print(f"{index}. {menu}")
 
@@ -46,11 +51,8 @@ def get_task(prompt) -> str:
 
 
 def print_no_tasks():
-    cprint(
-        """No tasks in the list
-               """,
-        "yellow",
-    )
+    cprint("No tasks in the list", "yellow")
+    print()
 
 
 def remove_task(todo, choice):
@@ -63,7 +65,7 @@ def remove_task(todo, choice):
 
 def view_tasks(todo):
     if todo[TASKS]:
-        print(colored("TASKS", "cyan", attrs=["reverse"]))
+        print_header(todo[HEADERS][1])
         for index, task in enumerate(todo[TASKS], 1):
             print(f"{index}. {task}")
         print()
