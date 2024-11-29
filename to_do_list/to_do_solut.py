@@ -17,9 +17,7 @@ GREEN = "green"
 
 
 def print_menu(menu: list) -> None:
-    """
-    Prints the menu to the console
-    """
+    """Prints the menu to the console"""
     cprint("\nMENU", CYAN, attrs=["reverse"])
     for item in menu:
         print(item)
