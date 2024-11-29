@@ -64,10 +64,13 @@ def add_task(tasks, task):
     tasks.append(task)
 
 
-def remove_task(tasks, user_input):
+def remove_task(tasks):
     if not tasks:
         print_no_task()
-    tasks.pop(user_input - 1)
+    else:
+        view_tasks(tasks)
+        user_input = get_user_input(tasks)
+        tasks.pop(user_input - 1)
 
 
 def main():
@@ -86,9 +89,8 @@ def main():
             add_task(tasks, task)
 
         elif menu_choice == REMOVE_TASK:
-            view_tasks(tasks)
-            user_input = get_user_input(tasks)
-            remove_task(tasks, user_input)
+            # view_tasks(tasks)
+            remove_task(tasks)
 
         elif menu_choice == EXIT:
             break
