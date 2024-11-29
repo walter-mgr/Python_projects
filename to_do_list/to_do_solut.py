@@ -8,9 +8,11 @@ EXIT = "4"
 
 
 def print_menu(menu):
+
     cprint("\nMENU", "cyan", attrs=["reverse"])
-    for value in menu:
-        print(value)
+
+    for item in menu:
+        print(item)
 
 
 def print_no_task():
@@ -21,7 +23,9 @@ def view_tasks(tasks):
     if not tasks:
         print_no_task()
         return
+
     cprint("\nTO-DO LIST", "cyan", attrs=["reverse"])
+
     for index, task in enumerate(tasks, 1):
         print(f"{index}. {task}")
 
@@ -30,14 +34,14 @@ def get_task() -> str:
     while True:
         try:
             task = input(colored("\nEnter a task: ", "yellow")).capitalize().strip()
-            if not task:
-                raise ValueError()
-            return task
+            if task:
+                return task
+            raise ValueError()
         except ValueError:
             cprint("Enter a text", "red")
 
 
-def get_user_input(tasks) -> int:
+def get_valid_user_input(tasks) -> int:
     while True:
         try:
             choice = int(input(colored("\nEnter a Task number: ", "green")))
@@ -48,8 +52,8 @@ def get_user_input(tasks) -> int:
             cprint("Invalid input", "red")
 
 
-def get_menu_coice() -> str:
-    valid_choices = (REMOVE_ALL, VIEW_TASKS, ADD_TASK, REMOVE_TASK, EXIT)
+def get_menu_choice() -> str:
+    valid_choices = (VIEW_TASKS, ADD_TASK, REMOVE_TASK, EXIT)
     while True:
         try:
             menu_choice = input(colored("\nEnter your choice: ", "green"))
@@ -67,10 +71,23 @@ def add_task(tasks, task):
 def remove_task(tasks):
     if not tasks:
         print_no_task()
-    else:
+        return
+
+    view_tasks(tasks)
+
+    user_input = get_valid_user_input(tasks)
+    tasks.pop(user_input - 1)
+
+
+def remove_all_tasks(tasks):
+    if len(tasks) > 1:
         view_tasks(tasks)
-        user_input = get_user_input(tasks)
-        tasks.pop(user_input - 1)
+        choice = input(
+            colored("To delete all press '0'. To continue press any: ", "magenta")
+        ).strip()
+        if choice == REMOVE_ALL:
+            tasks.clear()
+            return
 
 
 def main():
@@ -80,7 +97,8 @@ def main():
     while True:
         print_menu(menu)
 
-        menu_choice = get_menu_coice()
+        menu_choice = get_menu_choice()
+
         if menu_choice == VIEW_TASKS:
             view_tasks(tasks)
 
@@ -89,10 +107,10 @@ def main():
             add_task(tasks, task)
 
         elif menu_choice == REMOVE_TASK:
-            # view_tasks(tasks)
+            remove_all_tasks(tasks)
             remove_task(tasks)
 
-        elif menu_choice == EXIT:
+        else:
             break
 
 
