@@ -2,32 +2,37 @@ from termcolor import cprint, colored
 from enum import Enum
 
 
-class MenuOption(Enum):
+class Constants:
+    REMOVE_ALL = "0"
     VIEW_TASKS = "1"
     ADD_TASK = "2"
     REMOVE_TASK = "3"
     EXIT = "4"
+    COLOR_CYAN = "cyan"
+    COLOR_MAGENTA = "magenta"
+    COLOR_YELLOW = "yellow"
+    COLOR_GREEN = "green"
 
 
-REMOVE_ALL = "0"
-CYAN = "cyan"
-MAGENTA = "magenta"
-YELLOW = "yellow"
-GREEN = "green"
+class MenuOption(Enum):
+    VIEW_TASKS = Constants.VIEW_TASKS
+    ADD_TASK = Constants.ADD_TASK
+    REMOVE_TASK = Constants.REMOVE_TASK
+    EXIT = Constants.EXIT
 
 
 def print_menu(menu: list) -> None:
     """
     Prints the menu to the console
     """
-    cprint("\nMENU", CYAN, attrs=["reverse"])
+    cprint("\nMENU", Constants.COLOR_CYAN, attrs=["reverse"])
     for item in menu:
         print(item)
 
 
 def print_no_task() -> None:
     """Prints a message indicating there are no tasks"""
-    cprint("\nNo tasks in the list", YELLOW)
+    cprint("\nNo tasks in the list", Constants.COLOR_YELLOW)
 
 
 def view_tasks(tasks: list) -> None:
@@ -35,7 +40,7 @@ def view_tasks(tasks: list) -> None:
     if not tasks:
         print_no_task()
         return
-    cprint("\nTO-DO LIST", CYAN, attrs=["reverse"])
+    cprint("\nTO-DO LIST", Constants.COLOR_CYAN, attrs=["reverse"])
     for index, task in enumerate(tasks, 1):
         print(f"{index}. {task}")
 
@@ -44,7 +49,11 @@ def get_task() -> str:
     """Prompts the user to enter a task"""
     while True:
         try:
-            task = input(colored("\nEnter a task: ", YELLOW)).capitalize().strip()
+            task = (
+                input(colored("\nEnter a task: ", Constants.COLOR_YELLOW))
+                .capitalize()
+                .strip()
+            )
             if task:
                 return task
             raise ValueError()
@@ -56,7 +65,9 @@ def get_valid_user_input(tasks: list) -> int:
     """Gets a valid task number from the user"""
     while True:
         try:
-            choice = int(input(colored("\nEnter a Task number: ", GREEN)))
+            choice = int(
+                input(colored("\nEnter a Task number: ", Constants.COLOR_GREEN))
+            )
             if 0 < choice <= len(tasks):
                 return choice
             raise ValueError()
@@ -64,17 +75,17 @@ def get_valid_user_input(tasks: list) -> int:
             cprint("Invalid input", "red")
 
 
-def get_menu_choice() -> MenuOption:
+def get_menu_option() -> MenuOption:
     """Gets a valid menu choice from the user"""
     valid_choices = [option.value for option in MenuOption]
     while True:
         try:
-            menu_choice = input(colored("\nEnter your choice: ", GREEN))
+            menu_choice = input(colored("\nEnter your choice: ", Constants.COLOR_GREEN))
             if menu_choice in valid_choices:
                 return MenuOption(menu_choice)
             raise ValueError()
         except ValueError:
-            cprint("Choose from the given options", MAGENTA)
+            cprint("Choose from the given options", Constants.COLOR_MAGENTA)
 
 
 def add_task(tasks: list, task: str) -> None:
@@ -99,15 +110,18 @@ def remove_all_tasks(tasks):
     if len(tasks) > 1:
         view_tasks(tasks)
         choice = input(
-            colored("To delete all press '0'. To continue press any: ", MAGENTA)
+            colored(
+                "To delete all press '0'. To continue press any: ",
+                Constants.COLOR_MAGENTA,
+            )
         ).strip()
 
-        if choice == REMOVE_ALL:
+        if choice == Constants.REMOVE_ALL:
             tasks.clear()
             return
 
 
-def handle_menu_choice(menu_choice, tasks):
+def handle_menu_option(menu_choice, tasks):
     """Handles the user menu choice"""
     if menu_choice == MenuOption.VIEW_TASKS:
         view_tasks(tasks)
@@ -128,12 +142,12 @@ def main():
 
     while True:
         print_menu(menu)
-        menu_choice = get_menu_choice()
+        menu_choice = get_menu_option()
 
         if menu_choice == MenuOption.EXIT:
             break
 
-        handle_menu_choice(menu_choice, tasks)
+        handle_menu_option(menu_choice, tasks)
 
 
 if __name__ == "__main__":
