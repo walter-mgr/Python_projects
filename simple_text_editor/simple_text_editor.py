@@ -1,13 +1,13 @@
 import os
 import re
 from termcolor import colored, cprint
-from enum import Enum
 
 
 class ConstantsColors:
     COLOR_RED = "red"
     COLOR_GREEN = "green"
     COLOR_CYAN = "cyan"
+    COLOR_YELLOW = "yellow"
 
 
 class ConstantsErrors:
@@ -25,7 +25,7 @@ error_messages = {
 forbidden_chars_pattern = r"[<>:/\\|?*]"
 
 
-def is_valid_charachter(filename, forbidden_chars_pattern):
+def is_valid_character(filename, forbidden_chars_pattern):
     for char in filename:
         if re.search(forbidden_chars_pattern, char):
             return False
@@ -39,24 +39,26 @@ def is_valid_length(filename):
 
 
 def is_valid_filename(filename, forbidden_chars_pattern):
-    if is_valid_charachter(filename, forbidden_chars_pattern) and is_valid_length(
+    if is_valid_character(filename, forbidden_chars_pattern) and is_valid_length(
         filename
     ):
         return True
+    return False
 
 
 def get_valid_filename():
     while True:
         try:
-            filename = input("Enter a filename: ").lower().strip()
+            filename = (
+                input(colored("\nEnter a filename: ", ConstantsColors.COLOR_YELLOW))
+                .lower()
+                .strip()
+            )
             if is_valid_filename(filename, forbidden_chars_pattern) and filename:
                 return filename
             raise ValueError()
         except ValueError:
             print(error_messages[ConstantsErrors.INVALID_FILENAME_ERROR])
-
-
-# file_path = os.path.join(os.path.dirname(__file__), "test.txt")
 
 
 def read_from_existing_file(file_path):
@@ -103,7 +105,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # read_from_existing_file(file_path)
 
 
 """
