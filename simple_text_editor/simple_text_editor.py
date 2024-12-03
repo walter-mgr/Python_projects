@@ -14,6 +14,10 @@ class ConstantsErrors:
     INVALID_FILENAME_ERROR = "1"
 
 
+class ConstantsCommands:
+    SAVE = "SAVE"
+
+
 error_messages = {
     "1": colored("Please enter a valid filename", ConstantsColors.COLOR_RED)
 }
@@ -52,51 +56,62 @@ def get_valid_filename():
             print(error_messages[ConstantsErrors.INVALID_FILENAME_ERROR])
 
 
-"""
-def open_or_update_file(path, message):
+# file_path = os.path.join(os.path.dirname(__file__), "test.txt")
+
+
+def read_from_existing_file(file_path):
+
     try:
-        with open(path, "a") as file:
-            file.write(f"{message}\n")
+        with open(file_path, "r") as file:
+            contents = file.read()
+            print(f"\n{contents}")
     except FileNotFoundError:
-        print("The file does not exist.")
-"""
+        print("File does not exist.")
 
 
 def open_or_update_file(file_path):
+    if file_path:
+        read_from_existing_file(file_path)
+
     cprint(
         "\nEnter your text (type SAVE on a new line to save and exit):",
         ConstantsColors.COLOR_GREEN,
     )
+
     with open(file_path, "w") as file:
         while True:
             try:
                 line = input()
-                if line.upper() == "SAVE":
+                if line.upper() == ConstantsCommands.SAVE:
                     break
                 file.write(line + "\n")
 
             except FileNotFoundError:
-                print("The file does not exist.")
+                print("File does not exist.")
 
 
-# 1. Round / cycle
-# Enter the filename to open or create: somefile.txt
 def main():
 
     filename = get_valid_filename()
+
     file_path = os.path.join(os.path.dirname(__file__), filename)
 
     open_or_update_file(file_path)
-    # enter_text(file_path)
+
     cprint(f"{filename} saved", ConstantsColors.COLOR_CYAN)
 
 
-main()
+if __name__ == "__main__":
+    main()
+    # read_from_existing_file(file_path)
 
-# file_path = os.path.join(os.path.dirname(__file__), "test.txt")
-# text = enter_text()
-# open_or_update_file(file_path, text)
-# print(f"\n{text}")
+
+"""
+TASK DESCRIPTION
+
+# 1. Round / cycle
+
+# Enter the filename to open or create: somefile.txt
 
 # Enter your text (type SAVE on a new line to save and exist):
 #   Some text
@@ -110,9 +125,11 @@ main()
 # 2. Round / cycle
 
 # Enter the filename to open or create: somefile.txt
-#   Some text   (old data)
-#   Some text   (old data)
-#   Some text   (old data)
+
+# Read old data:
+#       Some text   (old data)
+#       Some text   (old data)
+#       Some text   (old data)
 
 # Enter your text (type SAVE on a new line to save and exist):
 
@@ -123,3 +140,5 @@ main()
 # SAVE
 
 # Recieve a masage: somefile.txt saved
+
+"""
