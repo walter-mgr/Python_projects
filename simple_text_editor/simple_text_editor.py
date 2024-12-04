@@ -16,6 +16,11 @@ class ConstErrors:
     """Class to store error code constants."""
 
     INVALID_FILENAME_ERROR = "1"
+    error_messages = {
+        INVALID_FILENAME_ERROR: colored(
+            "Please enter a valid filename", ConstColors.COLOR_RED
+        )
+    }
 
 
 class ConstCommands:
@@ -29,15 +34,8 @@ class ConstFileEditMode:
 
     FILE_WRITE = "w"
     FILE_READ = "r"
-
-
-error_messages = {
-    ConstErrors.INVALID_FILENAME_ERROR: colored(
-        "Please enter a valid filename", ConstColors.COLOR_RED
-    )
-}
-
-forbidden_chars_pattern = r"[<>:/\\|?*]"
+    FILE_ALLOWED_EXTENTIONS = {".txt"}
+    FILE_CHARS_FORBIDDEN_PATTERN = r"[<>:/\\|?*]"
 
 
 def is_valid_character(filename: str, pattern: str) -> bool:
@@ -63,9 +61,12 @@ def get_valid_filename() -> str:
             .lower()
             .strip()
         )
-        if is_valid_filename(filename, forbidden_chars_pattern) and filename:
+        if (
+            is_valid_filename(filename, ConstFileEditMode.FILE_CHARS_FORBIDDEN_PATTERN)
+            and filename
+        ):
             return filename
-        print(error_messages[ConstErrors.INVALID_FILENAME_ERROR])
+        print(ConstErrors.INVALID_FILENAME_ERROR)
 
 
 def read_from_existing_file(file_path: str, filename: str) -> None:
