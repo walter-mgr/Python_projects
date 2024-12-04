@@ -4,6 +4,8 @@ from termcolor import colored, cprint
 
 
 class ConstColors:
+    """Class to store color constants for terminal output."""
+
     COLOR_RED = "red"
     COLOR_GREEN = "green"
     COLOR_CYAN = "cyan"
@@ -11,41 +13,50 @@ class ConstColors:
 
 
 class ConstErrors:
+    """Class to store error code constants."""
+
     INVALID_FILENAME_ERROR = "1"
 
 
 class ConstCommands:
+    """Class to store command constants."""
+
     SAVE = "SAVE"
 
 
 class ConstFileEditMode:
+    """Class to store command constants."""
+
     FILE_WRITE = "w"
     FILE_READ = "r"
 
 
-error_messages = {"1": colored("Please enter a valid filename", ConstColors.COLOR_RED)}
+error_messages = {
+    ConstErrors.INVALID_FILENAME_ERROR: colored(
+        "Please enter a valid filename", ConstColors.COLOR_RED
+    )
+}
 
 forbidden_chars_pattern = r"[<>:/\\|?*]"
 
 
-def is_valid_character(filename, forbidden_chars_pattern):
-    for char in filename:
-        if re.search(forbidden_chars_pattern, char):
-            return False
-    return True
+def is_valid_character(filename: str, pattern: str) -> bool:
+    """Check if the filename contains any forbidden characters."""
+    return not any(re.search(pattern, char) for char in filename)
 
 
-def is_valid_length(filename):
+def is_valid_length(filename: str) -> bool:
+    """Check if the filename length is within the allowed limit."""
     return len(filename) <= 50
 
 
-def is_valid_filename(filename, forbidden_chars_pattern):
-    return is_valid_character(filename, forbidden_chars_pattern) and is_valid_length(
-        filename
-    )
+def is_valid_filename(filename: str, pattern: str) -> bool:
+    """Prompt the user to input a valid filename."""
+    return is_valid_character(filename, pattern) and is_valid_length(filename)
 
 
-def get_valid_filename():
+def get_valid_filename() -> str:
+    """Prompt the user to input a valid filename."""
     while True:
         filename = (
             input(colored("\nEnter a filename: ", ConstColors.COLOR_YELLOW))
@@ -57,7 +68,8 @@ def get_valid_filename():
         print(error_messages[ConstErrors.INVALID_FILENAME_ERROR])
 
 
-def read_from_existing_file(file_path, filename):
+def read_from_existing_file(file_path: str, filename: str) -> None:
+    """Read and display contents from an existing file."""
     print_cyan = colored(filename, ConstColors.COLOR_CYAN)
     try:
 
@@ -74,9 +86,10 @@ def read_from_existing_file(file_path, filename):
         )
 
 
-def open_and_update_file(file_path, filename):
-    if file_path:
-        read_from_existing_file(file_path, filename)
+def create_and_update_file(file_path: str, filename: str) -> None:
+    """Create a new file or update an existing file with user input."""
+    read_from_existing_file(file_path, filename)
+
     cprint(
         "Enter your text (type SAVE on a new line to save and exit):",
         ConstColors.COLOR_GREEN,
@@ -84,25 +97,22 @@ def open_and_update_file(file_path, filename):
 
     with open(file_path, ConstFileEditMode.FILE_WRITE) as file:
         while True:
-
             line = input()
             if line.upper() == ConstCommands.SAVE:
                 break
             file.write(line + "\n")
         cprint(f"{filename} saved", ConstColors.COLOR_CYAN)
 
-    # print("File does not exist.")
 
-
-def main():
+def main() -> None:
+    """Main function to run the file management program."""
     filename = get_valid_filename()
     file_path = os.path.join(os.path.dirname(__file__), filename)
-    open_and_update_file(file_path, filename)
+    create_and_update_file(file_path, filename)
 
 
 if __name__ == "__main__":
     main()
-    # print(get_valid_filename())
 
 
 """
@@ -112,7 +122,7 @@ TASK DESCRIPTION
 
 # Enter the filename to open or create: somefile.txt
 
-# Enter your text (type SAVE on a new line to save and exist):
+# Enter your text (type SAVE on a new line to save and exit):
 #   Some text
 #   Some text
 #   Some text
