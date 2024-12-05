@@ -12,17 +12,6 @@ class ConstColors:
     COLOR_YELLOW = "yellow"
 
 
-class ConstErrors:
-    """Class to store error code constants."""
-
-    INVALID_FILENAME_ERROR = "1"
-    error_messages = {
-        INVALID_FILENAME_ERROR: colored(
-            "Please enter a valid filename", ConstColors.COLOR_RED
-        )
-    }
-
-
 class ConstCommands:
     """Class to store command constants."""
 
@@ -30,12 +19,24 @@ class ConstCommands:
 
 
 class ConstFileEditMode:
-    """Class to store command constants."""
+    """Class to store file edit mode constants and file validation patterns."""
 
     FILE_WRITE = "w"
     FILE_READ = "r"
     FILE_ALLOWED_EXTENTIONS = {".txt"}
     FILE_CHARS_FORBIDDEN_PATTERN = r"[<>:/\\|?*]"
+
+
+class ConstErrors:
+    """Class to store error code constants."""
+
+    INVALID_FILENAME_ERROR = "1"
+
+    error_messages = {
+        INVALID_FILENAME_ERROR: colored(
+            "Please enter a valid filename", ConstColors.COLOR_RED
+        )
+    }
 
 
 def is_valid_character(filename: str, pattern: str) -> bool:
@@ -48,9 +49,19 @@ def is_valid_length(filename: str) -> bool:
     return len(filename) <= 50
 
 
+def is_valid_extention(filename: str, allowed_extention: set) -> bool:
+    """Check if the filename has a valid extension."""
+    _, ext = os.path.splitext(filename)
+    return ext in allowed_extention
+
+
 def is_valid_filename(filename: str, pattern: str) -> bool:
     """Prompt the user to input a valid filename."""
-    return is_valid_character(filename, pattern) and is_valid_length(filename)
+    return (
+        is_valid_character(filename, pattern)
+        and is_valid_length(filename)
+        and is_valid_extention(filename, ConstFileEditMode.FILE_ALLOWED_EXTENTIONS)
+    )
 
 
 def get_valid_filename() -> str:
@@ -66,28 +77,28 @@ def get_valid_filename() -> str:
             and filename
         ):
             return filename
-        print(ConstErrors.INVALID_FILENAME_ERROR)
+        print(ConstErrors.error_messages[ConstErrors.INVALID_FILENAME_ERROR])
 
 
 def read_from_existing_file(file_path: str, filename: str) -> None:
     """Read and display contents from an existing file."""
-    print_cyan = colored(filename, ConstColors.COLOR_CYAN)
+    print_filename_cyan = colored(filename, ConstColors.COLOR_CYAN)
     try:
 
         with open(file_path, ConstFileEditMode.FILE_READ) as file:
             contents = file.read()
             if not contents:
-                cprint("\nNo content in this file", ConstColors.COLOR_YELLOW)
+                cprint("\nNo content in this file", ConstColors.COLOR_CYAN)
             print(f"\n{contents}")
 
     except FileNotFoundError:
         cprint(
-            f"\nFile '{print_cyan}' was successfully created.\n",
+            f"\nFile '{print_filename_cyan}' was successfully created.\n",
             ConstColors.COLOR_GREEN,
         )
 
 
-def create_and_update_file(file_path: str, filename: str) -> None:
+def create_or_update_file(file_path: str, filename: str) -> None:
     """Create a new file or update an existing file with user input."""
     read_from_existing_file(file_path, filename)
 
@@ -109,7 +120,7 @@ def main() -> None:
     """Main function to run the file management program."""
     filename = get_valid_filename()
     file_path = os.path.join(os.path.dirname(__file__), filename)
-    create_and_update_file(file_path, filename)
+    create_or_update_file(file_path, filename)
 
 
 if __name__ == "__main__":
