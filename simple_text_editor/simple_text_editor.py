@@ -10,12 +10,14 @@ class ConstColors:
     COLOR_GREEN = "green"
     COLOR_CYAN = "cyan"
     COLOR_YELLOW = "yellow"
+    COLOR_MAGENTA = "magenta"
 
 
 class ConstCommands:
     """Class to store command constants."""
 
     SAVE = "SAVE"
+    EXIT = "EXIT"
 
 
 class ConstFileEditMode:
@@ -80,16 +82,16 @@ def get_valid_filename() -> str:
         print(ConstErrors.error_messages[ConstErrors.INVALID_FILENAME_ERROR])
 
 
-def read_from_existing_file(file_path: str, filename: str) -> None:
+def read_file(file_path: str, filename: str) -> None:
     """Read and display contents from an existing file."""
     print_filename_cyan = colored(filename, ConstColors.COLOR_CYAN)
     try:
 
         with open(file_path, ConstFileEditMode.FILE_READ) as file:
-            contents = file.read()
-            if not contents:
+            content = file.read()
+            if not content:
                 cprint("\nNo content in this file", ConstColors.COLOR_CYAN)
-            print(f"\n{contents}")
+            print(f"\n{content}")
 
     except FileNotFoundError:
         cprint(
@@ -98,26 +100,40 @@ def read_from_existing_file(file_path: str, filename: str) -> None:
         )
 
 
+def exit_file() -> bool:
+    cprint(
+        "Type 'EXIT' to exit without editing file content. Type any key to continue:",
+        ConstColors.COLOR_MAGENTA,
+    )
+    user_input = input()
+    return user_input.upper() == ConstCommands.EXIT
+
+
 def create_or_update_file(file_path: str, filename: str) -> None:
     """Create a new file or update an existing file with user input."""
-    read_from_existing_file(file_path, filename)
+    read_file(file_path, filename)
 
-    cprint(
-        "Enter your text (type SAVE on a new line to save and exit):",
-        ConstColors.COLOR_GREEN,
-    )
+    while True:
+        if exit_file():
+            break
 
-    with open(file_path, ConstFileEditMode.FILE_WRITE) as file:
-        while True:
-            line = input()
-            if line.upper() == ConstCommands.SAVE:
-                break
-            file.write(line + "\n")
-        cprint(f"{filename} saved", ConstColors.COLOR_CYAN)
+        cprint(
+            "Enter your text (type SAVE on a new line to save and exit):",
+            ConstColors.COLOR_GREEN,
+        )
+        with open(file_path, ConstFileEditMode.FILE_WRITE) as file:
+            while True:
+                line = input()
+                if line.upper() == ConstCommands.SAVE:
+                    break
+                file.write(line + "\n")
+            cprint(f"{filename} saved", ConstColors.COLOR_CYAN)
+        break
 
 
 def main() -> None:
     """Main function to run the file management program."""
+    cprint("SIMPLE TEXT EDITOR", ConstColors.COLOR_CYAN, attrs=["reverse"])
     filename = get_valid_filename()
     file_path = os.path.join(os.path.dirname(__file__), filename)
     create_or_update_file(file_path, filename)
