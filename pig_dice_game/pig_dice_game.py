@@ -12,68 +12,80 @@ class ConstColors:
     COLOR_GREEN = "green"
     COLOR_CYAN = "cyan"
     COLOR_RED = "red"
+    COLOR_YELLOW = "yellow"
+    COLOR_MAGENTA = "light_magenta"
+
+
+def roll_dice() -> int:
+    return randint(1, 6)
+
+
+def switch_player(current_player: str) -> str:
+    return PLAYER_TWO if current_player == PLAYER_ONE else PLAYER_ONE
+
+
+def print_current_score(current_score: int) -> None:
+    cprint(f"\nYou scored {current_score} this turn", ConstColors.COLOR_MAGENTA)
+
+
+def print_total_scores(total_score_one, total_score_two) -> None:
+    cprint(
+        f"Current scores: Player 1: {total_score_one}, Player 2: {total_score_two}\n",
+        ConstColors.COLOR_MAGENTA,
+    )
+
+
+def play_turn(current_player, total_score_one, total_score_two):
+    current_score = 0
+    while True:
+        dice = roll_dice()
+        if dice == 1:
+            cprint(f"You rolled a {dice}", ConstColors.COLOR_RED)
+            current_score = 0
+            print_current_score(current_score)
+            break
+        else:
+            current_score += dice
+            cprint(f"You rolled a {dice}", ConstColors.COLOR_CYAN)
+
+        player_choice = input("Roll again? (y/n): ").lower().strip()
+        if player_choice == EXIT:
+            return current_player, total_score_one, total_score_two, True
+
+        if player_choice == NO:
+            print_current_score(current_score)
+            break
+
+    if current_player == PLAYER_ONE:
+        total_score_one += current_score
+    else:
+        total_score_two += current_score
+
+    return current_player, total_score_one, total_score_two, False
 
 
 def main():
     total_score_one = 0
     total_score_two = 0
-
     current_player = PLAYER_ONE
-    current_score = total_score_one
+    game_over = False
+    cprint("PIG DICE GAME", ConstColors.COLOR_CYAN, attrs=["reverse"])
 
-    print(f"Player {current_player}'s turn")
-
-    while True:
-
-        dice = randint(1, 6)
-
-        if dice == 1:
-
-            if current_player == PLAYER_ONE:
-                current_score = 0
-                total_score_one = current_score
-            else:
-                current_score = 0
-                total_score_two = current_score
-
-            cprint(f"You rolled a {dice}", ConstColors.COLOR_RED)
-            print(f"\nYou scored {current_score} points this turn.")
-            print(
-                f"Current scores: Player 1: {total_score_one}, Player 2: {total_score_two}\n"
-            )
-            current_player = PLAYER_TWO if current_player == PLAYER_ONE else PLAYER_ONE
-            print(f"Player {current_player}'s turn")
-            continue
-
-        if current_player == PLAYER_ONE:
-            total_score_one += dice
-            current_score = total_score_one
+    while not game_over:
+        cprint(f"\nPlayer {current_player}'s turn", ConstColors.COLOR_YELLOW)
+        current_player, total_score_one, total_score_two, game_over = play_turn(
+            current_player, total_score_one, total_score_two
+        )
+        print_total_scores(total_score_one, total_score_two)
+        if total_score_one >= GAME_LIMIT or total_score_two >= GAME_LIMIT:
+            cprint(f"Player {current_player} is winner!", ConstColors.COLOR_GREEN)
+            game_over = True
         else:
-            total_score_two += dice
-            current_score = total_score_two
-        print(f"You rolled a {dice}")
-
-        player_choice = input("Roll again? (y/n): ").lower().strip()
-        if player_choice == EXIT:
-            break
-
-        if player_choice == NO:
-            print(f"\nYou scored {current_score} points this turn.")
-            if current_player == PLAYER_ONE:
-                total_score_one = current_score
-            else:
-                total_score_two = current_score
-            print(
-                f"Current scores: Player 1: {total_score_one}, Player 2: {total_score_two}\n"
-            )
-            if total_score_one >= 50 or total_score_two >= 50:
-                cprint(f"Player {current_player} is winner!")
-                break
-            current_player = PLAYER_TWO if current_player == PLAYER_ONE else PLAYER_ONE
-            print(f"Player {current_player}'s turn")
+            current_player = switch_player(current_player)
 
 
-main()
+if __name__ == "__main__":
+    main()
 
 
 """
@@ -85,9 +97,11 @@ main()
     # Call random function
     # Take user input if continue or not
     # Store rolled points for each player
-        # If roll == 1:
-            Current players score == 0
-            Automatically switch a player
+        
+        
+        
+        
+        
 
 
     # Player 1's turn
@@ -99,8 +113,12 @@ main()
     #   Roll again? (y/n): y
 
     # Points are collecting 6 + 3 + 5
-    #   If roll a 1 all points are gone
-    #       Turn ends
+    
+    #   If roll == 1:
+            Current players score == 0
+                Need to do: reset only scores from this round
+                All scores from the previous rounds must stay saved
+            Automatically switch a player
 
     # Messages:
     #   You scored 14 points this turn.
@@ -130,12 +148,5 @@ if dice == 1:
         total_score_two = 0
         current_score = total_score_two
 
-2. This version resets only current player's score
-
-if dice == 1:
-    if current_player == PLAYER_ONE:
-        current_score = 0
-    else:
-        current_score = 0
 
 """
