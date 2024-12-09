@@ -1,3 +1,19 @@
+# Generate a random 4-digit number
+# Print a message: Try to guess a 4-digit number with unique digits.
+# # Take user input
+# # Give a feddback
+import random
+
+
+def get_four_unique_digit_number():
+    digits = random.sample(range(10), 4)
+    return "".join([str(digit) for digit in digits])
+
+
+secret_number = get_four_unique_digit_number()
+print(secret_number)
+
+
 """
 #   When run a program computer generates a 4-digit number with unique digits
 #   User need to guess a number with the computer hints
