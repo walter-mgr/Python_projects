@@ -85,6 +85,7 @@ def play_turn(total_score_one: int, total_score_two: int, current_player: str) -
             break
 
         if player_choice == ConstGameOptions.EXIT:
+            print_total_scores(total_score_one, total_score_two)
             return total_score_one, total_score_two, current_player, True
 
     if current_player == ConstPlayers.PLAYER_ONE:
@@ -116,13 +117,13 @@ def main():
             total_score_one, total_score_two, current_player
         )
 
+        if exit_game:
+            break
+
         print_total_scores(total_score_one, total_score_two)
 
-        if (
-            determine_winner(
-                total_score_one, total_score_two, ConstGameOptions.GAME_LIMIT
-            )
-            or exit_game
+        if determine_winner(
+            total_score_one, total_score_two, ConstGameOptions.GAME_LIMIT
         ):
             cprint(f"Player {current_player} is winner!", ConstColors.COLOR_GREEN)
             break
