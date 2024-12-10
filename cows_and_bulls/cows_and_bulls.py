@@ -1,50 +1,143 @@
-# Generate a random 4-digit number
-# Print a message: Try to guess a 4-digit number with unique digits.
-# # Take user input
 # # Give a feddback
+
 import random
+from termcolor import cprint, colored
+import re
+
+EXIT = "q"
 
 
-def get_four_unique_digit_number():
+class ConstColors:
+    COLOR_CYAN = "cyan"
+    COLOR_GREEN = "green"
+    COLOR_YELLOW = "yellow"
+    COLOR_RED = "red"
+
+
+def get_four_unique_digit_number() -> str:
     digits = random.sample(range(10), 4)
     return "".join([str(digit) for digit in digits])
 
 
-secret_number = get_four_unique_digit_number()
-print(secret_number)
+def is_valid_len(user_input):
+    return len(user_input) == 4
+
+
+def is_all_digits(user_input):
+    return str(user_input).isdigit()
+
+
+def is_four_digit_set(user_input):
+    return len(set(user_input)) == 4
+
+
+def is_four_digit_number(number: str) -> bool:
+    pattern = r"^\d{4}$"
+    return bool(re.match(pattern, number))
+
+
+def get_valid_user_input():
+    while True:
+        user_input = input("Guess (to quit press 'Q'): ").lower().strip()
+        if user_input == EXIT:
+            return user_input
+        if (
+            is_four_digit_number(user_input)
+            # is_valid_len(user_input)
+            # and is_all_digits(user_input)
+            # and is_four_digit_set(user_input)
+        ):
+            return user_input
+        cprint("Invalid input", ConstColors.COLOR_RED)
+
+
+def count_bulls_cows(secret_number, user_guess):
+    bulls = len(
+        [
+            digit
+            for index, digit in enumerate(secret_number)
+            if user_guess[index].__eq__(secret_number[index])
+        ]
+    )
+    cows = len([digit for digit in user_guess if digit in secret_number])
+    if bulls:
+        cows -= bulls
+
+    return bulls, cows
+
+
+def print_feedback(bulls, cows, secret_number):
+    print(f"Feedback: {bulls} bulls, {cows} cows")
+    if bulls == len(secret_number):
+        cprint("\nYou win!", ConstColors.COLOR_GREENs)
+        return
+
+
+def main():
+    secret_number = get_four_unique_digit_number()
+    print(secret_number)  # remove me after finish
+    cprint("Try to guess a 4-digit number with unique digits.", ConstColors.COLOR_CYAN)
+    while True:
+        user_guess = get_valid_user_input()
+        if user_guess == EXIT:
+            cprint(
+                f"You gave up too soon! Secret number is: {secret_number}",
+                ConstColors.COLOR_YELLOW,
+            )
+            break
+
+        bulls, cows = count_bulls_cows(secret_number, user_guess)
+        if secret_number == user_guess:
+            print_feedback(bulls, cows, secret_number)
+            break
+
+        print_feedback(bulls, cows, secret_number)
+
+
+if __name__ == "__main__":
+    main()
 
 
 """
-#   When run a program computer generates a 4-digit number with unique digits
-#   User need to guess a number with the computer hints
 
-    # Get valid input:
-        # Not an integer, not a string, not a double or tripple digits
+    assert (
+        len(get_four_unique_digit_number()) == 4
+    ), "Test failed: The result must be 4 digits long"
+    assert (
+        len(set(get_four_unique_digit_number())) == 4
+    ), "Test failed: The digits must be unique"
+    assert (
+        get_four_unique_digit_number().isdigit()
+    ), "Test failed: The result must contain only digits"
+    print("All tests passed!")
 
-    #  Guess: 1123
-    #  Invalid guess. Please enter a 4-digit number with unique digits.
-    
-    #  Guess: 1234
-        2 cows, 1 bulls / one of the digits is in the correct position
-                          two digits that a right, but in the wrong position
+    TODO: reconsider validation
 
-    #  Guess: 4321
-        3 cows, 0 bulls / 0 of the digits on the correct position
+    def is_four_digit_number(number: str) -> bool:
+        pattern = r"^\d{4}$"
+        return bool(re.match(pattern, number))
 
-    #  Guess: 4231
-        2 cows, 1 bulls
+    Explanation:
+    1. Pattern r"^\d{4}$":
 
-    #  Guess: 1243
-        0 cows, 3 bulls
+        ^ : Asserts position at the start of the string.
 
-    #  Guess: 4321
-        2 cows, 1 bulls
+        \d : Matches any digit (equivalent to [0-9]).
 
-    #  Guess: 4321
-        0 cows, 3 bulls
+        {4} : Matches exactly 4 digits.
 
-    #  Guess: 9321
-        0 cows, 4 bulls
-    
-                        
+        $ : Asserts position at the end of the string.    
+
+    # Example usage:
+    print(is_four_digit_number("1234"))  # True
+    print(is_four_digit_number("123"))   # False
+    print(is_four_digit_number("abcd"))  # False
+
+
+    """
+
+"""
+command for running tests:
+cd / project_dir ->
+python -m unittest discover -s tests
 """
