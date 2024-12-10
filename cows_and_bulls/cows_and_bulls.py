@@ -1,10 +1,10 @@
-# # Give a feddback
-
 import random
-from termcolor import cprint, colored
+from termcolor import cprint
 import re
 
-EXIT = "q"
+
+class ConstMenuOptions:
+    EXIT = "q"
 
 
 class ConstColors:
@@ -19,39 +19,26 @@ def get_four_unique_digit_number() -> str:
     return "".join([str(digit) for digit in digits])
 
 
-def is_valid_len(user_input):
-    return len(user_input) == 4
+def is_four_digit_number(user_input: str) -> bool:
+    pattern = r"^\d{4}$"
+    return bool(re.match(pattern, user_input))
 
 
-def is_all_digits(user_input):
-    return str(user_input).isdigit()
-
-
-def is_four_digit_set(user_input):
+def is_four_digit_set(user_input: str) -> bool:
     return len(set(user_input)) == 4
 
 
-def is_four_digit_number(number: str) -> bool:
-    pattern = r"^\d{4}$"
-    return bool(re.match(pattern, number))
-
-
-def get_valid_user_input():
+def get_valid_user_input() -> str:
     while True:
         user_input = input("Guess (to quit press 'Q'): ").lower().strip()
-        if user_input == EXIT:
+        if user_input == ConstMenuOptions.EXIT:
             return user_input
-        if (
-            is_four_digit_number(user_input)
-            # is_valid_len(user_input)
-            # and is_all_digits(user_input)
-            # and is_four_digit_set(user_input)
-        ):
+        if is_four_digit_number(user_input) and is_four_digit_set(user_input):
             return user_input
         cprint("Invalid input", ConstColors.COLOR_RED)
 
 
-def count_bulls_cows(secret_number, user_guess):
+def count_bulls_cows(secret_number: str, user_guess: str) -> tuple:
     bulls = len(
         [
             digit
@@ -66,20 +53,24 @@ def count_bulls_cows(secret_number, user_guess):
     return bulls, cows
 
 
-def print_feedback(bulls, cows, secret_number):
-    print(f"Feedback: {bulls} bulls, {cows} cows")
+def print_feedback(bulls, cows, secret_number, attempts):
+    cprint(f"Feedback: {bulls} bulls, {cows} cows", ConstColors.COLOR_CYAN)
     if bulls == len(secret_number):
-        cprint("\nYou win!", ConstColors.COLOR_GREENs)
+        cprint(f"\nThe number was: {secret_number}", ConstColors.COLOR_YELLOW)
+        cprint(f"\nYou win! You had {attempts} tries.", ConstColors.COLOR_GREEN)
         return
 
 
 def main():
     secret_number = get_four_unique_digit_number()
-    print(secret_number)  # remove me after finish
-    cprint("Try to guess a 4-digit number with unique digits.", ConstColors.COLOR_CYAN)
+    attempts = 0
+    cprint(
+        "\nTry to guess a 4-digit number with unique digits.", ConstColors.COLOR_CYAN
+    )
+
     while True:
         user_guess = get_valid_user_input()
-        if user_guess == EXIT:
+        if user_guess == ConstMenuOptions.EXIT:
             cprint(
                 f"You gave up too soon! Secret number is: {secret_number}",
                 ConstColors.COLOR_YELLOW,
@@ -87,57 +78,13 @@ def main():
             break
 
         bulls, cows = count_bulls_cows(secret_number, user_guess)
+        attempts += 1
         if secret_number == user_guess:
-            print_feedback(bulls, cows, secret_number)
+            print_feedback(bulls, cows, secret_number, attempts)
             break
 
-        print_feedback(bulls, cows, secret_number)
+        print_feedback(bulls, cows, secret_number, attempts)
 
 
 if __name__ == "__main__":
     main()
-
-
-"""
-
-    assert (
-        len(get_four_unique_digit_number()) == 4
-    ), "Test failed: The result must be 4 digits long"
-    assert (
-        len(set(get_four_unique_digit_number())) == 4
-    ), "Test failed: The digits must be unique"
-    assert (
-        get_four_unique_digit_number().isdigit()
-    ), "Test failed: The result must contain only digits"
-    print("All tests passed!")
-
-    TODO: reconsider validation
-
-    def is_four_digit_number(number: str) -> bool:
-        pattern = r"^\d{4}$"
-        return bool(re.match(pattern, number))
-
-    Explanation:
-    1. Pattern r"^\d{4}$":
-
-        ^ : Asserts position at the start of the string.
-
-        \d : Matches any digit (equivalent to [0-9]).
-
-        {4} : Matches exactly 4 digits.
-
-        $ : Asserts position at the end of the string.    
-
-    # Example usage:
-    print(is_four_digit_number("1234"))  # True
-    print(is_four_digit_number("123"))   # False
-    print(is_four_digit_number("abcd"))  # False
-
-
-    """
-
-"""
-command for running tests:
-cd / project_dir ->
-python -m unittest discover -s tests
-"""
