@@ -5,6 +5,7 @@ import re
 
 class ConstMenuOptions:
     EXIT = "q"
+    GET_HINT = "h"
 
 
 class ConstColors:
@@ -31,7 +32,10 @@ def is_four_digit_set(user_input: str) -> bool:
 def get_valid_user_input() -> str:
     while True:
         user_input = input("Guess (to quit press 'Q'): ").lower().strip()
-        if user_input == ConstMenuOptions.EXIT:
+        if (
+            user_input == ConstMenuOptions.EXIT
+            or user_input == ConstMenuOptions.GET_HINT
+        ):
             return user_input
         if is_four_digit_number(user_input) and is_four_digit_set(user_input):
             return user_input
@@ -53,6 +57,14 @@ def count_bulls_cows(secret_number: str, user_guess: str) -> tuple:
     return bulls, cows
 
 
+def get_random_hint(secret_number, num_replace=3, replace_to="_"):
+    hint_sequence = list(secret_number)
+    positions = random.sample(range(len(hint_sequence)), num_replace)
+    for position in positions:
+        hint_sequence[position] = replace_to
+    return "".join(hint_sequence)
+
+
 def print_feedback(bulls, cows, secret_number, attempts):
     cprint(f"Feedback: {bulls} bulls, {cows} cows", ConstColors.COLOR_CYAN)
     if bulls == len(secret_number):
@@ -70,15 +82,21 @@ def main():
 
     while True:
         user_guess = get_valid_user_input()
+
         if user_guess == ConstMenuOptions.EXIT:
             cprint(
                 f"You gave up too soon! Secret number is: {secret_number}",
                 ConstColors.COLOR_YELLOW,
             )
             break
+        if user_guess == ConstMenuOptions.GET_HINT:
+            hint = get_random_hint(secret_number)
+            cprint(f"Here is a hint: {hint} ", ConstColors.COLOR_YELLOW)
+            continue
 
         bulls, cows = count_bulls_cows(secret_number, user_guess)
         attempts += 1
+
         if secret_number == user_guess:
             print_feedback(bulls, cows, secret_number, attempts)
             break
