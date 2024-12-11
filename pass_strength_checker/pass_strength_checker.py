@@ -23,12 +23,38 @@ User Input:
 
 """
 
-# Define 6 stages of the password strength
-#   # Very week
-#   # Week
-#   # Medium
-#   # Strong
-#   # Vrey strong
+import re
+
+
+strength_criteria = {
+    "Very Strong": r"^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?:{}|<>]).{5,}$",
+    "Strong": r"^(?=.*[A-Z])(?=.*[a-z]).{6,}$",
+    "Medium": r"^(?=.*[A-Z]).{7,}$",
+    "Weak": r"^\d{8}$",
+    "Very Weak": r"^\d{4}$",
+}
+
+
+def check_password_strength(password: str, strength_criteria: dict) -> str:
+    for strength, pattern in strength_criteria.items():
+        if re.match(pattern, password):
+            return strength
+    return "Very Weak"
+
+
+def main():
+    while True:
+        password = input("Enter a password: ")
+        strong_pass = check_password_strength(password, strength_criteria)
+        if strong_pass == "Very Strong":
+            print(f"Your password is {strong_pass}")
+            break
+        print(f"Your password is {strong_pass}")
+
+
+if __name__ == "__main__":
+    main()
+
 
 # Create a regex pattern for checking the password strength
 
