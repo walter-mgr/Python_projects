@@ -1,3 +1,43 @@
+"""
+COWS AND BULLS GAME
+
+Objective:
+Develop a text-based implementation of the "Cows and Bulls" game where
+the player guesses a secret 4-digit number with unique digits. The game provides
+feedback on each guess in terms of "bulls" (correct digits in the correct positions)
+and "cows" (correct digits in the wrong positions). The player can also request
+hints or exit the game.
+
+Classes:
+- ConstMenuOptions: Holds menu options for exiting and getting hints.
+- ConstColors: Contains color constants for output.
+- GameConfig: Stores game configuration constants like the number of digits.
+
+Functions:
+- get_four_unique_digit_number: Generates a random 4-digit number with unique digits.
+- is_four_digit_number: Validates if the input is a 4-digit number.
+- is_four_digit_set: Validates if the input consists of 4 unique digits.
+- get_valid_user_input: Prompts the user for a valid 4-digit guess or an exit command.
+- count_bulls_cows: Counts the number of bulls and cows in the user's guess.
+- get_random_hint: Generates a hint by replacing random digits in the secret number
+    with a given character.
+- print_feedback: Provides feedback on the user's guess, including the number of bulls
+    and cows.
+- main: The main game loop that handles user interaction and game flow.
+
+Game Flow:
+1. Generate a secret 4-digit number with unique digits.
+2. Prompt the player to enter a guess, request a hint, or exit the game.
+3. Validate the user's input to ensure it's a valid 4-digit number with unique digits.
+4. Provide feedback on the guess in terms of bulls and cows.
+5. If requested, provide a hint by revealing a specified number of digits in the
+    secret number.
+6. Track the number of attempts made by the player.
+7. Continue the game loop until the player guesses the secret number correctly
+    or chooses to exit.
+
+"""
+
 import random
 from termcolor import cprint
 import re
