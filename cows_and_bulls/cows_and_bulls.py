@@ -4,34 +4,50 @@ import re
 
 
 class ConstMenuOptions:
+    """Class to hold menu options."""
+
     EXIT = "q"
     GET_HINT = "h"
 
 
 class ConstColors:
+    """Class to hold color constants for output."""
+
     COLOR_CYAN = "cyan"
     COLOR_GREEN = "green"
     COLOR_YELLOW = "yellow"
     COLOR_RED = "red"
 
 
+class ConstNumberConfig:
+    """Class to hold game configuration constants."""
+
+    NUMBER_LENGTH = 4
+
+
 def get_four_unique_digit_number() -> str:
-    digits = random.sample(range(10), 4)
+    """Generate a 4-digit number with unique digits."""
+    digits = random.sample(range(10), ConstNumberConfig.NUMBER_LENGTH)
     return "".join([str(digit) for digit in digits])
 
 
 def is_four_digit_number(user_input: str) -> bool:
+    """Check if the input is a 4-digit number."""
     pattern = r"^\d{4}$"
     return bool(re.match(pattern, user_input))
 
 
 def is_four_digit_set(user_input: str) -> bool:
-    return len(set(user_input)) == 4
+    """Check if the input is a 4-digit number."""
+    return len(set(user_input)) == ConstNumberConfig.NUMBER_LENGTH
 
 
 def get_valid_user_input() -> str:
+    """Prompt the user for a valid 4-digit guess or an exit command."""
     while True:
-        user_input = input("Guess (to quit press 'Q'): ").lower().strip()
+        user_input = (
+            input("Guess (to quit press 'Q', for a hint press 'H'): ").lower().strip()
+        )
         if (
             user_input == ConstMenuOptions.EXIT
             or user_input == ConstMenuOptions.GET_HINT
@@ -43,6 +59,7 @@ def get_valid_user_input() -> str:
 
 
 def count_bulls_cows(secret_number: str, user_guess: str) -> tuple:
+    """Count the number of bulls and cows in the user guess."""
     bulls = len(
         [
             digit
@@ -50,14 +67,16 @@ def count_bulls_cows(secret_number: str, user_guess: str) -> tuple:
             if user_guess[index].__eq__(secret_number[index])
         ]
     )
-    cows = len([digit for digit in user_guess if digit in secret_number])
-    if bulls:
-        cows -= bulls
+    cows = len([digit for digit in user_guess if digit in secret_number]) - bulls
 
     return bulls, cows
 
 
-def get_random_hint(secret_number, num_replace=3, replace_to="_"):
+def get_random_hint(
+    secret_number: str, num_replace: int = 3, replace_to: str = "_"
+) -> str:
+    """Generate a hint for the secret number by randomly selecting a number of
+    positions and replacing the digits at those positions with a given character."""
     hint_sequence = list(secret_number)
     positions = random.sample(range(len(hint_sequence)), num_replace)
     for position in positions:
@@ -65,7 +84,8 @@ def get_random_hint(secret_number, num_replace=3, replace_to="_"):
     return "".join(hint_sequence)
 
 
-def print_feedback(bulls, cows, secret_number, attempts):
+def print_feedback(bulls: int, cows: int, secret_number: str, attempts: int) -> None:
+    """Print feedback on the user's guess."""
     cprint(f"Feedback: {bulls} bulls, {cows} cows", ConstColors.COLOR_CYAN)
     if bulls == len(secret_number):
         cprint(f"\nThe number was: {secret_number}", ConstColors.COLOR_YELLOW)
@@ -74,6 +94,7 @@ def print_feedback(bulls, cows, secret_number, attempts):
 
 
 def main():
+    """Main function to run the game."""
     secret_number = get_four_unique_digit_number()
     attempts = 0
     cprint(
@@ -89,6 +110,7 @@ def main():
                 ConstColors.COLOR_YELLOW,
             )
             break
+
         if user_guess == ConstMenuOptions.GET_HINT:
             hint = get_random_hint(secret_number)
             cprint(f"Here is a hint: {hint} ", ConstColors.COLOR_YELLOW)
