@@ -95,7 +95,9 @@ def get_valid_user_input() -> str:
             return user_input
         if is_four_digit_number(user_input) and is_four_digit_set(user_input):
             return user_input
-        cprint("Invalid input", ConstColors.COLOR_RED)
+        cprint(
+            "Please enter a 4-digit number with unique digits", ConstColors.COLOR_RED
+        )
 
 
 def count_bulls_cows(secret_number: str, user_guess: str) -> tuple:
