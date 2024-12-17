@@ -125,7 +125,7 @@ def get_pass_length() -> int:
             raise ValueError()
         except ValueError:
             cprint(
-                "\nPassword must be at least 4 characters long\n", ConstColors.COLOR_RED
+                "\nPassword must be at least 4 characters long", ConstColors.COLOR_RED
             )
 
 
