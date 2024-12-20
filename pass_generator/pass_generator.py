@@ -1,9 +1,9 @@
 """ Password Generator Program
 
-    This program generates a random password based on user-defined configurations.
-The user can specify the length of the password and choose to include uppercase letters,
-numbers, and special characters. The program ensures that the generated password meets
-the specified criteria.
+    This program generates a random password  with unique characters based on
+user-defined configurations. The user can specify the length of the password
+and choose to include uppercase letters, numbers, and special characters.
+The program ensures that the generated password meets the specified criteria.
 
 Project Description:
 1. **User Input**: The user is prompted to enter the desired password length
@@ -19,7 +19,7 @@ Project Description:
 
 Functions:
 - get_pass_length() -> int: Prompts the user to enter the password length.
-- get_pass_config() -> dict: Prompts the user to choose password configurations.
+- get_settings() -> dict: Prompts the user to choose password configurations.
 - get_sequence(char_sequences: dict, settings: dict) -> tuple: Returns the character
     sequence based on the user's settings and the corresponding pattern for validation.
 - generate_password(sequence: str, length: int, pattern: str) -> str: Generates a random
@@ -47,7 +47,6 @@ import re
 import string
 import random
 from termcolor import cprint, colored
-from typing import Optional
 
 
 class ConstCommands:
@@ -55,7 +54,6 @@ class ConstCommands:
 
 
 class ConstColors:
-    COLOR_RED = "red"
     COLOR_GREEN = "green"
     COLOR_CYAN = "cyan"
     COLOR_YELLOW = "yellow"
@@ -82,6 +80,7 @@ class ConstPatternStrength:
     MEDIUM = "medium"
     STRONG = "strong"
     VERY_STRONG = "very_strong"
+    END = "end"
 
 
 menu_options = {
@@ -98,14 +97,16 @@ char_sequences = {
     ConstPassConfig.STRING_LOWER: string.ascii_lowercase,
     ConstPassConfig.STRING_UPPER: string.ascii_uppercase,
     ConstPassConfig.STRING_NUMBERS: string.digits,
-    ConstPassConfig.STRING_SYMBOLS: "!#$%&'()*+-:<=>?@[]_/",
+    ConstPassConfig.STRING_SYMBOLS: string.punctuation,
 }
 
+
 patterns = {
-    ConstPatternStrength.WEAK: r"^(?=.*[a-z]).{4,}$",
-    ConstPatternStrength.MEDIUM: r"^(?=.*[a-z])(?=.*[A-Z]).{4,}$",
-    ConstPatternStrength.STRONG: r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{4,}$",
-    ConstPatternStrength.VERY_STRONG: r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!#$%&'()*+\-:<=>?@[\\\]_/]).{4,}$",
+    ConstPatternStrength.WEAK: r"^(?=.*[a-z])",
+    ConstPatternStrength.MEDIUM: r"(?=.*[A-Z])",
+    ConstPatternStrength.STRONG: r"(?=.*\d)",
+    ConstPatternStrength.VERY_STRONG: r"(?=.*[!#$%&'()*+\-:<=>?@[\\\]_/])",
+    ConstPatternStrength.END: r".+$",
 }
 
 
@@ -122,16 +123,18 @@ def get_pass_length() -> int:
             )
             if length >= ConstPassConfig.MIN_LENGTH:
                 return length
+
             raise ValueError()
         except ValueError:
             cprint(
-                "\nPassword must be at least 4 characters long", ConstColors.COLOR_RED
+                f"\nPassword must be at least 4 characters long",
+                ConstColors.COLOR_MAGENTA,
             )
 
 
-def get_pass_config() -> dict:
+def get_settings() -> dict:
     """Prompts the user to choose password configurations"""
-    pass_config = {
+    settings = {
         ConstPassConfig.INCLUDE_UPPER: False,
         ConstPassConfig.INCLUDE_DIGITS: False,
         ConstPassConfig.INCLUDE_SYMBOLS: False,
@@ -140,57 +143,70 @@ def get_pass_config() -> dict:
         user_input = input(colored(option, ConstColors.COLOR_CYAN)).lower().strip()
 
         if user_input == ConstCommands.YES:
-            pass_config[key] = True
+            settings[key] = True
         else:
-            pass_config[key] = False
+            settings[key] = False
 
-    return pass_config
+    return settings
 
 
-def get_sequence(char_sequences: str, settings: dict) -> tuple:
+def get_configs(char_sequences: str, settings: dict) -> tuple:
     """Returns one of the 8 possible variants of the character sequence string
     and a pattern for generating a valid password."""
     sequence = char_sequences[ConstPassConfig.STRING_LOWER]
-    pattern = patterns[ConstPatternStrength.WEAK]
+    pattern = [patterns[ConstPatternStrength.WEAK], patterns[ConstPatternStrength.END]]
 
     if settings[ConstPassConfig.INCLUDE_UPPER]:
         sequence += char_sequences[ConstPassConfig.STRING_UPPER]
-        pattern = patterns[ConstPatternStrength.MEDIUM]
+        pattern.insert(-1, patterns[ConstPatternStrength.MEDIUM])
 
     if settings[ConstPassConfig.INCLUDE_DIGITS]:
         sequence += char_sequences[ConstPassConfig.STRING_NUMBERS]
-        pattern = patterns[ConstPatternStrength.STRONG]
+        pattern.insert(-1, patterns[ConstPatternStrength.STRONG])
 
     if settings[ConstPassConfig.INCLUDE_SYMBOLS]:
         sequence += char_sequences[ConstPassConfig.STRING_SYMBOLS]
-        pattern = patterns[ConstPatternStrength.VERY_STRONG]
+        pattern.insert(-1, patterns[ConstPatternStrength.VERY_STRONG])
 
-    return sequence, pattern
+    return sequence, "".join(pattern)
 
 
 def generate_password(sequence: str, length: int, pattern: str) -> str:
     """Generates a password based on user's configurations"""
+
     while True:
-        password = "".join(random.choices(sequence, k=length))
+        password = "".join(random.sample(sequence, length))
         if validate_password(password, pattern):
             return password
         continue
 
 
-def validate_password(password: str, pattern: str) -> Optional[bool]:
+def validate_password(password: str, pattern: str) -> bool:
     """Validate a password using a pattern associated with chracter sequence"""
-    if re.match(pattern, password):
-        return any(password)
+    return bool(re.match(pattern, password))
 
 
 def main():
     """Runs pass generator programm"""
+    while True:
+        try:
+            length = get_pass_length()
+            settings = get_settings()
+            sequence, pattern = get_configs(char_sequences, settings)
+            if length > len(sequence):
+                raise ValueError()
 
-    length = get_pass_length()
-    settings = get_pass_config()
-    sequence, pattern = get_sequence(char_sequences, settings)
-    password = generate_password(sequence, length, pattern)
-    cprint(f"\nYour password is: {colored(password, ConstColors.COLOR_YELLOW)}\n")
+            password = generate_password(sequence, length, pattern)
+
+            cprint(
+                f"\nYour password is: {colored(password, ConstColors.COLOR_YELLOW)}\n"
+            )
+            break
+        except ValueError:
+            cprint(
+                f"\nPassword length can be max {len(sequence)} characters long",
+                ConstColors.COLOR_MAGENTA,
+            )
 
 
 if __name__ == "__main__":
