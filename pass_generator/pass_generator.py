@@ -1,6 +1,6 @@
 """ Password Generator Program
 
-    This program generates a random password  with unique characters based on
+    This program generates a random password with unlimit length based on
 user-defined configurations. The user can specify the length of the password
 and choose to include uppercase letters, numbers, and special characters.
 The program ensures that the generated password meets the specified criteria.
@@ -18,7 +18,7 @@ Project Description:
 5. **Output**: The generated password is displayed to the user.
 
 Functions:
-- get_pass_length() -> int: Prompts the user to enter the password length.
+- get_length() -> int: Prompts the user to enter the password length.
 - get_settings() -> dict: Prompts the user to choose password configurations.
 - get_sequence(char_sequences: dict, settings: dict) -> tuple: Returns the character
     sequence based on the user's settings and the corresponding pattern for validation.
@@ -54,7 +54,6 @@ class ConstCommands:
 
 
 class ConstColors:
-    COLOR_GREEN = "green"
     COLOR_CYAN = "cyan"
     COLOR_YELLOW = "yellow"
     COLOR_MAGENTA = "magenta"
@@ -110,7 +109,7 @@ patterns = {
 }
 
 
-def get_pass_length() -> int:
+def get_length() -> int:
     """Prompts the user to enter the password length"""
     while True:
         try:
@@ -150,7 +149,7 @@ def get_settings() -> dict:
     return settings
 
 
-def get_configs(char_sequences: str, settings: dict) -> tuple:
+def get_sequence(char_sequences: str, settings: dict) -> tuple:
     """Returns one of the 8 possible variants of the character sequence string
     and a pattern for generating a valid password."""
     sequence = char_sequences[ConstPassConfig.STRING_LOWER]
@@ -175,7 +174,7 @@ def generate_password(sequence: str, length: int, pattern: str) -> str:
     """Generates a password based on user's configurations"""
 
     while True:
-        password = "".join(random.sample(sequence, length))
+        password = "".join(random.choices(sequence, k=length))
         if validate_password(password, pattern):
             return password
         continue
@@ -188,25 +187,12 @@ def validate_password(password: str, pattern: str) -> bool:
 
 def main():
     """Runs pass generator programm"""
-    while True:
-        try:
-            length = get_pass_length()
-            settings = get_settings()
-            sequence, pattern = get_configs(char_sequences, settings)
-            if length > len(sequence):
-                raise ValueError()
 
-            password = generate_password(sequence, length, pattern)
-
-            cprint(
-                f"\nYour password is: {colored(password, ConstColors.COLOR_YELLOW)}\n"
-            )
-            break
-        except ValueError:
-            cprint(
-                f"\nPassword length can be max {len(sequence)} characters long",
-                ConstColors.COLOR_MAGENTA,
-            )
+    length = get_length()
+    settings = get_settings()
+    sequence, pattern = get_sequence(char_sequences, settings)
+    password = generate_password(sequence, length, pattern)
+    cprint(f"\nYour password is: {colored(password, ConstColors.COLOR_YELLOW)}\n")
 
 
 if __name__ == "__main__":
