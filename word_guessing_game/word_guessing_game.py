@@ -103,7 +103,7 @@ def main():
         else:
             wrong_attempts += 1
             print(
-                f"Wrong guess. Attempts to left: {GameConfig.MAX_ATTEMPTS - wrong_attempts}"
+                f"Wrong guess. Attempts left: {GameConfig.MAX_ATTEMPTS - wrong_attempts}"
             )
 
         if wrong_attempts == GameConfig.MAX_ATTEMPTS:
