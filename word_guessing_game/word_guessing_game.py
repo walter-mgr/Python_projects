@@ -55,6 +55,7 @@ class GameConfig:
     FILENAME = "words.txt"
     READ = "r"
     MAX_ATTEMPTS = 6
+    ALLOWED_LETTERS = r"^[a-z]$"
 
 
 file_path = os.path.join(os.path.dirname(__file__), GameConfig.FILENAME)
@@ -86,26 +87,22 @@ def print_secret(secret_word: str, guesses: str) -> None:
 
 def get_user_input(guessed_letters: set) -> str:
     """Gets valid user input and checks if letter has already been guessed."""
-    is_valid = r"^[a-z]$"
-
     while True:
         user_input = input("Enter a letter: ").lower().strip()
         if user_input == GameConfig.QUIT:
             return GameConfig.QUIT
 
-        if user_input in guessed_letters:
-            print("You alredy guessed that letter.")
-            continue
-
-        if user_input and re.match(is_valid, user_input):
-            return user_input
-
-        if len(user_input) > 1:
+        if len(user_input) != 1:
             print("Enter only one letter")
-            continue
 
-        print("Enter only letters from a to z.")
-        continue
+        elif not re.search(GameConfig.ALLOWED_LETTERS, user_input):
+            print("Enter only letters from 'a' to 'z'.")
+
+        elif user_input in guessed_letters:
+            print("You already guessed that letter.")
+
+        else:
+            return user_input
 
 
 def guess_word(wrong_attempts: int, secret_word: str, guessed_letters: str) -> None:
@@ -137,13 +134,14 @@ def guess_word(wrong_attempts: int, secret_word: str, guessed_letters: str) -> N
 
 def main():
     """Runs the word guessing game."""
-    words_list = read_file(file_path)
-    secret_word = get_random_word(words_list)
-    if not secret_word:
-        return
+    # words_list = read_file(file_path)
+    # secret_word = get_random_word(words_list)
+    # if not secret_word:
+    # return
     guessed_letters = set()
-    wrong_attempts = 0
-    guess_word(wrong_attempts, secret_word, guessed_letters)
+    # wrong_attempts = 0
+    # guess_word(wrong_attempts, secret_word, guessed_letters)
+    get_user_input(guessed_letters)
 
 
 if __name__ == "__main__":
