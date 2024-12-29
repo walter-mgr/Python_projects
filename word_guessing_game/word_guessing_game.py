@@ -48,11 +48,13 @@ running out of attempts, they win. Otherwise, they lose, and the correct word is
 import os
 import re
 import random
+import json
 
 
 class GameConfig:
     QUIT = "0"
-    FILENAME = "words.txt"
+    # FILENAME = "words.txt"
+    FILENAME = "words.json"
     READ = "r"
     MAX_ATTEMPTS = 6
     ALLOWED_LETTERS = r"^[a-z]$"
@@ -60,7 +62,7 @@ class GameConfig:
 
 file_path = os.path.join(os.path.dirname(__file__), GameConfig.FILENAME)
 
-
+'''
 def read_file(file_path: str) -> list:
     """Reads from the file and returns a list of words."""
     try:
@@ -69,6 +71,17 @@ def read_file(file_path: str) -> list:
     except FileNotFoundError:
         print("File does not exist.")
         return []
+'''
+
+
+def read_file(file_path: str) -> dict:
+    """Reads from the file and returns a list of words."""
+    try:
+        with open(file_path, GameConfig.READ) as file:
+            return json.load(file)
+    except FileNotFoundError:
+        print("File does not exist.")
+        return {}
 
 
 def get_random_word(words_list: list) -> str:
@@ -134,13 +147,15 @@ def guess_word(wrong_attempts: int, secret_word: str, guessed_letters: str) -> N
 
 def main():
     """Runs the word guessing game."""
-    words_list = read_file(file_path)
-    secret_word = get_random_word(words_list)
-    if not secret_word:
-        return
-    guessed_letters = set()
-    wrong_attempts = 0
-    guess_word(wrong_attempts, secret_word, guessed_letters)
+    words = read_file(file_path)
+    print(words)
+
+    # secret_word = get_random_word(words_list)
+    # if not secret_word:
+    # return
+    # guessed_letters = set()
+    # wrong_attempts = 0
+    # guess_word(wrong_attempts, secret_word, guessed_letters)
 
 
 if __name__ == "__main__":
