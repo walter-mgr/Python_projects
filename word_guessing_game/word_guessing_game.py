@@ -134,14 +134,13 @@ def guess_word(wrong_attempts: int, secret_word: str, guessed_letters: str) -> N
 
 def main():
     """Runs the word guessing game."""
-    # words_list = read_file(file_path)
-    # secret_word = get_random_word(words_list)
-    # if not secret_word:
-    # return
+    words_list = read_file(file_path)
+    secret_word = get_random_word(words_list)
+    if not secret_word:
+        return
     guessed_letters = set()
-    # wrong_attempts = 0
-    # guess_word(wrong_attempts, secret_word, guessed_letters)
-    get_user_input(guessed_letters)
+    wrong_attempts = 0
+    guess_word(wrong_attempts, secret_word, guessed_letters)
 
 
 if __name__ == "__main__":
