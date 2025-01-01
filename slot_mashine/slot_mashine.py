@@ -14,11 +14,14 @@ Classes:
 
 Functions:
 - display_balance(balance): Displays current user's balance.
-- spin_reels(reels): Returns a tuple with three random choices from reel choices.
-- get_balance(): Prompts user to enter a valid starting balance.
+- spin_reels(reels): Simulates slot machine spinning reels. Returns a tuple with
+    three random symbols.
+- display_reels(first, second, third): Displays symbols.
+- get_balance(): Prompts userto enter a valid starting balance.
 - get_bet_amount(balance): Prompts user to enter a valid bet amount.
+- display_winnings(amount): Displays the amount the player won.
 - play_game(balance): Main game loop that handles game play.
-- main(): Entry point for the game.
+- main(): Entry point for the game
 """
 
 import random
@@ -96,8 +99,8 @@ def play_game(balance: int) -> None:
         display_reels(first_reel, second_reel, third_reel)
 
         if first_reel == second_reel == third_reel:
+            balance += bet_amount * 10 - bet_amount
             bet_amount *= 10
-            balance += bet_amount
             display_winnings(bet_amount)
             display_balance(balance)
 
@@ -106,8 +109,8 @@ def play_game(balance: int) -> None:
             or first_reel == third_reel
             or second_reel == third_reel
         ):
+            balance += bet_amount * 2 - bet_amount
             bet_amount *= 2
-            balance += bet_amount / 2
             display_winnings(bet_amount)
             display_balance(balance)
 
@@ -130,12 +133,11 @@ def play_game(balance: int) -> None:
         if continue_game == GameConfig.QUIT:
             display_winnings(balance)
             break
-        continue
 
 
 def main():
     """Entry point for the game"""
-    # print(spin_reels(GameConfig.REELS))
+
     cprint("👑👑👑 SLOT MASHINE GAME 👑👑👑\n", Color.YELLOW)
     balance = get_balance()
     cprint("\nWelcome to the Slot Mashine Game!", Color.GREEN)
