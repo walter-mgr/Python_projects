@@ -14,7 +14,7 @@ Classes:
 
 Functions:
 - display_balance(balance): Displays current user's balance.
-- get_reels(reels): Returns a tuple with three random choices from reel choices.
+- spin_reels(reels): Returns a tuple with three random choices from reel choices.
 - get_balance(): Prompts user to enter a valid starting balance.
 - get_bet_amount(balance): Prompts user to enter a valid bet amount.
 - play_game(balance): Main game loop that handles game play.
@@ -42,12 +42,15 @@ def display_balance(balance: int) -> None:
     cprint(f"\nCurrent balance: 💲{balance:.0f}", Color.YELLOW)
 
 
-def get_reels(reels: tuple) -> tuple:
-    """Returns a tuple with three random choices from reels choices."""
-    first = random.choice(reels)
-    second = random.choice(reels)
-    third = random.choice(reels)
+def spin_reels(reels: tuple) -> tuple:
+    """Simulates slot mashine spinning reels. Returns a tuple with three random symbols."""
+    first, second, third = [random.choice(reels) for _ in range(3)]
     return first, second, third
+
+
+def display_reels(first: str, second: str, third: str) -> None:
+    """Displays symbols."""
+    print(f"{first} | {second} | {third}")
 
 
 def get_balance() -> int:
@@ -79,18 +82,23 @@ def get_bet_amount(balance: int) -> int:
             cprint("Please enter a valid number for the bet amount.", Color.RED)
 
 
+def display_winnings(amount: int) -> int:
+    """Displays the amount the player won."""
+    cprint(f"You won 💲{amount:.0f}!", Color.GREEN)
+
+
 def play_game(balance: int) -> None:
     """Main game loop that handles game play."""
     while balance > 0:
         display_balance(balance)
         bet_amount = get_bet_amount(balance)
-        first_reel, second_reel, third_reel = get_reels(GameConfig.REELS)
-        print(first_reel, second_reel, third_reel)
+        first_reel, second_reel, third_reel = spin_reels(GameConfig.REELS)
+        display_reels(first_reel, second_reel, third_reel)
 
         if first_reel == second_reel == third_reel:
             bet_amount *= 10
             balance += bet_amount
-            cprint(f"You won 💲{bet_amount:.0f}!", Color.GREEN)
+            display_winnings(bet_amount)
             display_balance(balance)
 
         elif (
@@ -100,7 +108,7 @@ def play_game(balance: int) -> None:
         ):
             bet_amount *= 2
             balance += bet_amount / 2
-            cprint(f"You won 💲{bet_amount:.0f}!", Color.GREEN)
+            display_winnings(bet_amount)
             display_balance(balance)
 
         else:
@@ -120,12 +128,14 @@ def play_game(balance: int) -> None:
             .strip()
         )
         if continue_game == GameConfig.QUIT:
+            display_winnings(balance)
             break
         continue
 
 
 def main():
     """Entry point for the game"""
+    # print(spin_reels(GameConfig.REELS))
     cprint("👑👑👑 SLOT MASHINE GAME 👑👑👑\n", Color.YELLOW)
     balance = get_balance()
     cprint("\nWelcome to the Slot Mashine Game!", Color.GREEN)
